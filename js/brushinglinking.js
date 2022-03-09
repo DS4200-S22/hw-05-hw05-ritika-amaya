@@ -113,12 +113,12 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Define a brush (call it brush1)
 
-    brush1 = (d3.brush()
+    //brush1 = (d3.brush()
     //            .extent()
 
     //TODO: Add brush1 to svg1
     
-  }
+
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   
