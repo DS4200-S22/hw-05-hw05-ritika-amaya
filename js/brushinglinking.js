@@ -1,7 +1,7 @@
 // Set margins and dimensions 
-const margin = { top: 50, right: 50, bottom: 50, left: 200 };
+const margin = { top: 50, right: 50, bottom: 50, left: 100 };
 const width = 900; //- margin.left - margin.right;
-const height = 650; //- margin.top - margin.bottom;
+const height = 450; //- margin.top - margin.bottom;
 
 // Append svg object to the body of the page to house Scatterplot1
 const svg1 = d3.select("#vis-holder")
@@ -34,7 +34,7 @@ const svg3 = d3.select("#vis-holder")
                 .attr("viewBox", [0, 0, width, height]); 
 
 //TODO: Initialize bars. We will need these to be global. 
-
+let bars;
 
 // Define color scale
 const color = d3.scaleOrdinal()
@@ -113,6 +113,9 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Define a brush (call it brush1)
 
+    brush1 = (d3.brush()
+    //            .extent()
+
     //TODO: Add brush1 to svg1
     
   }
@@ -125,17 +128,17 @@ d3.csv("data/iris.csv").then((data) => {
     yKey2 = "Petal_Width";
 
     // Find max x
-    let maxX2 = d3.max(data, (d) => { return d[xKey2]; });
+    let maxX1 = d3.max(data, (d) => { return d[xKey2]; });
 
     // Create X scale
     x2 = d3.scaleLinear()
-                .domain([0,maxX2])
+                .domain([0,maxX1])
                 .range([margin.left, width-margin.right]); 
     
     // Add x axis 
     svg2.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`) 
-        .call(d3.axisBottom(x2))   
+        .call(d3.axisBottom(x1))   
         .attr("font-size", '20px')
         .call((g) => g.append("text")
                       .attr("x", width - margin.right)
@@ -211,24 +214,40 @@ d3.csv("data/iris.csv").then((data) => {
     svg3.append("g")
         .attr("transform", `translate(${margin.left}, 0)`) 
         .call(d3.axisLeft(y3)) 
-        .attr("font-size", '20px'); 
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey3)); 
 
   // Add x axis to webpage  
     svg3.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`) 
         .call(d3.axisBottom(x3) 
                 .tickFormat(i => data3[i].name))  
-        .attr("font-size", '20px'); 
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom - 4)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey3)); 
 
 // Add bars to the webpage
-    svg3.data(data3) 
-        .enter()  
-        .append("rect") 
-           .attr("class", "bar") 
-           .attr("x", (d,i) => x3(i)) 
-           .attr("y", (d) => y3(d.score)) 
-           .attr("height", (d) => (height - margin.bottom) - y3(d.score)) 
-           .attr("width", x3.bandwidth()) 
+    bars = svg3.selectAll(".bar")
+               .data(data3)
+               .enter()  
+               .append("rect") 
+                .attr("class", "bar") 
+                .attr("x", (d,i) => x3(i)) 
+                .attr("y", (d) => y3(d.score)) 
+                .attr("height", (d) => (height - margin.bottom) - y3(d.score))
+                .attr("width", x3.bandwidth()) 
+                .style("fill", (d) => color(d.Species))
+                .style("opacity", 0.5);
+                
 
 }
 
