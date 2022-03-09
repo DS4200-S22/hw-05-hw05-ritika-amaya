@@ -2,3 +2,8 @@
 body {
   font-family: Arial;
 }
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
